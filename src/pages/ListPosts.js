@@ -8,36 +8,25 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import axios from 'axios';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     width: '100%',
   },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
+  container: {
+    maxHeight: 440,
   },
-  table: {
-    minWidth: 750,
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-}));
+});
 
-function createData(userId, body, title) {
-  return { userId, body, title };
-}
+const columns = [
+  { id: 'userId', label: 'userId', minWidth: 100, align: 'left' },
+  { id: 'title', label: 'Title', minWidth: 100, align: 'left' },
+  { id: 'body', label: 'Body', minWidth: 100, align: 'left' },
+];
 
 const ListPosts = () => {
   const classes = useStyles();
@@ -53,13 +42,7 @@ const ListPosts = () => {
         .get(urlEndpoint)
         .then((resp) => {
           const data = resp.data;
-          console.log(data);
-          //   setDataPosts(data);
-          const newData = data.map((item) => {
-            return createData(item.userId, item.body, item.title);
-          });
-
-          setDataPosts(newData);
+          setDataPosts(data);
         })
         .catch((err) => {
           console.log(err);
@@ -78,31 +61,47 @@ const ListPosts = () => {
     setPage(0);
   };
 
+  const handleDetailItem = (data) => {
+    console.log(data);
+  };
+
   return (
-    <Paper className={classes.paper}>
-      <TableContainer>
-        <Table className={classes.table} size='small' aria-label='a dense table'>
+    <Paper className={classes.root}>
+      <TableContainer className={classes.container}>
+        <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
-              <TableCell>UserId</TableCell>
-              <TableCell align='center'>Title</TableCell>
-              <TableCell align='center'>Body</TableCell>
+              {columns.map((column) => (
+                <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                  {column.label}
+                </TableCell>
+              ))}
+              <TableCell align='left' style={{ minWidth: 100 }}>
+                View More
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {dataPosts.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell align='left'>{row.userId}</TableCell>
-                <TableCell align='left'>{row.title}</TableCell>
-                <TableCell align='left'>{row.body}</TableCell>
-              </TableRow>
-            ))}
+            {dataPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+              return (
+                <TableRow hover role='checkbox' tabIndex={-1} key={item.id}>
+                  <TableCell align='left'>{item.userId}</TableCell>
+                  <TableCell align='left'>{item.title}</TableCell>
+                  <TableCell align='left'>{item.body}</TableCell>
+                  <TableCell align='left'>
+                    <IconButton aria-label='view-more' color='primary' onClick={() => handleDetailItem(item)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
-
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component='div'
         count={dataPosts.length}
         rowsPerPage={rowsPerPage}

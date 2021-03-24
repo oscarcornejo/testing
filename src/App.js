@@ -156,6 +156,7 @@ function App() {
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact path='/new-post' component={NewPost} />
+          <Route exact path='/post-detail' component={NewPost} />
           <Route exact path='/' component={ListPosts} />
           <Redirect to='/' />
         </Switch>
