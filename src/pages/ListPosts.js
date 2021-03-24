@@ -12,14 +12,11 @@ import IconButton from '@material-ui/core/IconButton';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight: 440,
-  },
+  root: { width: '100%' },
+  container: { maxHeight: 440 },
 });
 
 const columns = [
@@ -30,6 +27,7 @@ const columns = [
 
 const ListPosts = () => {
   const classes = useStyles();
+  let history = useHistory();
 
   const [dataPosts, setDataPosts] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -63,6 +61,7 @@ const ListPosts = () => {
 
   const handleDetailItem = (data) => {
     console.log(data);
+    history.push({ pathname: `/post-detail/${data.id}`, state: { detail: data } });
   };
 
   return (

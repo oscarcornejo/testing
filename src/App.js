@@ -24,6 +24,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ListIcon from '@material-ui/icons/List';
 import NewPost from './pages/NewPost';
 import ListPosts from './pages/ListPosts';
+import PostDetail from './pages/PostDetail';
+
 import { Redirect } from 'react-router';
 
 const drawerWidth = 240;
@@ -156,7 +158,7 @@ function App() {
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact path='/new-post' component={NewPost} />
-          <Route exact path='/post-detail' component={NewPost} />
+          <Route exact path='/post-detail/:id' component={PostDetail} />
           <Route exact path='/' component={ListPosts} />
           <Redirect to='/' />
         </Switch>
