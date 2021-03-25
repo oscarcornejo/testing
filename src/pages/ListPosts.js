@@ -76,8 +76,9 @@ const ListPosts = () => {
     setPage(0);
   };
 
-  const handleDetailItem = (data) => {
-    history.push({ pathname: `/post-detail/${data.id}`, state: { detail: data } });
+  const handleDetailItem = (id) => {
+    // history.push({ pathname: `/post-detail/${data.id}`, state: { detail: data } });
+    history.push(`/post-detail/${id}`);
   };
 
   return (
@@ -111,7 +112,7 @@ const ListPosts = () => {
                       <TableCell align='left'>{item.title}</TableCell>
                       <TableCell align='left'>{item.body}</TableCell>
                       <TableCell align='left'>
-                        <IconButton aria-label='view-more' color='primary' onClick={() => handleDetailItem(item)}>
+                        <IconButton aria-label='view-more' color='primary' onClick={() => handleDetailItem(item.id)}>
                           <VisibilityIcon />
                         </IconButton>
                       </TableCell>
