@@ -1,7 +1,19 @@
 import { useEffect, useState } from 'react';
 
 // material-ui/core
-import { makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper, IconButton } from '@material-ui/core';
+import {
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Paper,
+  IconButton,
+  CircularProgress,
+} from '@material-ui/core';
 
 // material-ui/icons
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -32,18 +44,23 @@ const ListPosts = () => {
   const [dataPosts, setDataPosts] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getPost = () => {
+      setLoading(true);
+
       const urlEndpoint = 'https://jsonplaceholder.typicode.com/posts';
       axios
         .get(urlEndpoint)
         .then((resp) => {
           const data = resp.data;
           setDataPosts(data);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
         });
     };
 
@@ -65,48 +82,57 @@ const ListPosts = () => {
 
   return (
     <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
-                  {column.label}
-                </TableCell>
-              ))}
-              <TableCell align='left' style={{ minWidth: 100 }}>
-                View More
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {dataPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
-              return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={item.id}>
-                  <TableCell align='left'>{item.userId}</TableCell>
-                  <TableCell align='left'>{item.title}</TableCell>
-                  <TableCell align='left'>{item.body}</TableCell>
-                  <TableCell align='left'>
-                    <IconButton aria-label='view-more' color='primary' onClick={() => handleDetailItem(item)}>
-                      <VisibilityIcon />
-                    </IconButton>
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100, marginTop: 50 }}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <>
+          <TableContainer className={classes.container}>
+            <Table aria-label='sticky table'>
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                      {column.label}
+                    </TableCell>
+                  ))}
+                  <TableCell align='left' style={{ minWidth: 100 }}>
+                    View More
                   </TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25, 100]}
-        component='div'
-        count={dataPosts.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+              </TableHead>
+
+              <TableBody>
+                {dataPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                  return (
+                    <TableRow hover tabIndex={-1} key={item.id}>
+                      <TableCell align='left'>{item.userId}</TableCell>
+                      <TableCell align='left'>{item.title}</TableCell>
+                      <TableCell align='left'>{item.body}</TableCell>
+                      <TableCell align='left'>
+                        <IconButton aria-label='view-more' color='primary' onClick={() => handleDetailItem(item)}>
+                          <VisibilityIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, 100]}
+            component='div'
+            count={dataPosts.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </>
+      )}
     </Paper>
   );
 };
