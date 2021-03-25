@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 // material-ui/core
-import { TextField, makeStyles, Button, Snackbar, IconButton, Paper, Grid } from '@material-ui/core';
+import { TextField, makeStyles, Button, Snackbar, IconButton, Paper, Grid, CircularProgress } from '@material-ui/core';
+import { green } from '@material-ui/core/colors';
 
 // material-ui/icons
 import CloseIcon from '@material-ui/icons/Close';
@@ -15,6 +16,15 @@ const useStyles = makeStyles((theme) => ({
   textField: { marginLeft: theme.spacing(1), marginRight: theme.spacing(1), width: '25ch' },
   paper: { padding: theme.spacing(2), textAlign: 'center', color: theme.palette.text.secondary, marginTop: 50 },
   margin: { margin: theme.spacing(1) },
+  wrapper: { margin: theme.spacing(1), position: 'relative' },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
 const NewPost = () => {
@@ -29,6 +39,7 @@ const NewPost = () => {
     inputsTitleError: false,
     inputsBodyError: false,
   });
+  const [loading, setLoading] = useState(false);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -39,19 +50,23 @@ const NewPost = () => {
 
   const handlePost = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!title && !bodyPost) {
       setErrorInput({ ...errorInput, inputsAllErrors: true });
+      setLoading(false);
       return;
     }
 
     if (!title) {
       setErrorInput({ ...errorInput, inputsTitleError: true });
+      setLoading(false);
       return;
     }
 
     if (!bodyPost) {
       setErrorInput({ ...errorInput, inputsBodyError: true });
+      setLoading(false);
       return;
     }
 
@@ -65,20 +80,26 @@ const NewPost = () => {
       .post(urlEndpoint, data, headersConfig)
       .then((resp) => {
         // const data = resp.data;
-        setTitle('');
-        setBodypost('');
+
         setMessage('Send Post Ok!');
         setErrorInput({
           inputsAllErrors: false,
           inputsTitleError: false,
           inputsBodyError: false,
         });
-        setOpen(true);
+
+        setTimeout(() => {
+          setTitle('');
+          setBodypost('');
+          setOpen(true);
+          setLoading(false);
+        }, 1500);
       })
       .catch((err) => {
         console.error(err);
         setMessage('Not Send Post :(');
         setOpen(true);
+        setLoading(false);
       });
   };
 
@@ -118,9 +139,13 @@ const NewPost = () => {
                     className={classes.margin}
                   />
 
-                  <Button type='submit' variant='contained' color='primary' fullWidth className={classes.margin}>
-                    Send New Post
-                  </Button>
+                  <div className={classes.wrapper}>
+                    <Button type='submit' disabled={loading} variant='contained' color='primary' fullWidth className={classes.margin}>
+                      Send New Post
+                    </Button>
+
+                    {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                  </div>
                 </div>
               </form>
             </Paper>
