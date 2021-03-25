@@ -91,6 +91,7 @@ function App() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -98,6 +99,10 @@ function App() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleListItemClick = (event, index) => {
+    setSelectedIndex(index);
   };
 
   return (
@@ -139,14 +144,14 @@ function App() {
         <Divider />
 
         <List>
-          <ListItem button component={NavLink} to='/'>
+          <ListItem button component={NavLink} to='/' selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0)}>
             <ListItemIcon>
               <ListIcon />
             </ListItemIcon>
             <ListItemText primary='List posts' />
           </ListItem>
 
-          <ListItem button component={NavLink} to='/new-post'>
+          <ListItem button component={NavLink} to='/new-post' selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1)}>
             <ListItemIcon>
               <AddCircleOutlineIcon />
             </ListItemIcon>
