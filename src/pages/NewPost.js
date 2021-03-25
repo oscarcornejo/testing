@@ -1,35 +1,20 @@
 import { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
+
+// material-ui/core
+import { TextField, makeStyles, Button, Snackbar, IconButton, Paper, Grid } from '@material-ui/core';
+
+// material-ui/icons
 import CloseIcon from '@material-ui/icons/Close';
 
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-
+// Http
 import axios from 'axios';
 
+// Set Style
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '25ch',
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    marginTop: 50,
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
+  root: { display: 'flex', flexWrap: 'wrap' },
+  textField: { marginLeft: theme.spacing(1), marginRight: theme.spacing(1), width: '25ch' },
+  paper: { padding: theme.spacing(2), textAlign: 'center', color: theme.palette.text.secondary, marginTop: 50 },
+  margin: { margin: theme.spacing(1) },
 }));
 
 const NewPost = () => {
@@ -49,7 +34,6 @@ const NewPost = () => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpen(false);
   };
 
@@ -74,9 +58,7 @@ const NewPost = () => {
     const urlEndpoint = 'https://jsonplaceholder.typicode.com/posts';
     const data = { title, bodyPost };
     const headersConfig = {
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
+      headers: { 'Content-type': 'application/json; charset=UTF-8' },
     };
 
     axios
@@ -147,10 +129,7 @@ const NewPost = () => {
       </div>
 
       <Snackbar
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}

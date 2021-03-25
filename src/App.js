@@ -1,39 +1,44 @@
 import { useState } from 'react';
-import { Switch, Route, NavLink } from 'react-router-dom';
 
-import './App.css';
+// react-router-dom
+import { Switch, Route, NavLink, Redirect, useLocation } from 'react-router-dom';
 
+// material-ui/core
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  makeStyles,
+  useTheme,
+  Drawer,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@material-ui/core';
+
+// material-ui/icons
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ListIcon from '@material-ui/icons/List';
+
+// Pages
 import NewPost from './pages/NewPost';
 import ListPosts from './pages/ListPosts';
 import PostDetail from './pages/PostDetail';
 
-import { Redirect } from 'react-router';
-
+// Set Drawer
 const drawerWidth = 240;
 
+// Set Styles
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
+  root: { display: 'flex' },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -51,16 +56,9 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  hide: {
-    display: 'none',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
+  hide: { display: 'none' },
+  drawer: { width: drawerWidth, flexShrink: 0 },
+  drawerPaper: { width: drawerWidth },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
@@ -90,30 +88,17 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const theme = useTheme();
+  const location = useLocation();
+
   const [open, setOpen] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-  };
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position='fixed'
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
+      <AppBar position='fixed' className={clsx(classes.appBar, { [classes.appBarShift]: open })}>
         <Toolbar>
           <IconButton
             color='inherit'
@@ -129,29 +114,22 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant='persistent'
-        anchor='left'
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
+
+      <Drawer className={classes.drawer} variant='persistent' anchor='left' open={open} classes={{ paper: classes.drawerPaper }}>
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}</IconButton>
         </div>
         <Divider />
 
         <List>
-          <ListItem button component={NavLink} to='/' selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0)}>
+          <ListItem button component={NavLink} to='/' selected={location.pathname === '/'}>
             <ListItemIcon>
               <ListIcon />
             </ListItemIcon>
             <ListItemText primary='List posts' />
           </ListItem>
 
-          <ListItem button component={NavLink} to='/new-post' selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1)}>
+          <ListItem button component={NavLink} to='/new-post' selected={location.pathname === '/new-post'}>
             <ListItemIcon>
               <AddCircleOutlineIcon />
             </ListItemIcon>

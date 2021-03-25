@@ -1,21 +1,15 @@
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { useHistory, useLocation } from 'react-router';
 
+// react-router-dom
+import { useHistory, useLocation } from 'react-router-dom';
+
+// material-ui/core
+import { Grid, Paper, Typography, Button, makeStyles } from '@material-ui/core';
+
+// Set Style
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    margin: 'auto',
-    maxWidth: 650,
-    marginTop: 50,
-  },
+  root: { flexGrow: 1 },
+  paper: { padding: theme.spacing(2), margin: 'auto', maxWidth: 650, marginTop: 50 },
 }));
 
 const PostDetail = () => {
@@ -60,10 +54,6 @@ const PostDetail = () => {
               </Grid>
 
               <Grid item>
-                {/* <Typography variant='body2' style={{ cursor: 'pointer' }}>
-                  Go Back
-                </Typography> */}
-
                 <Button onClick={goBack} variant='contained'>
                   <Typography variant='body2' style={{ cursor: 'pointer' }}>
                     Go Back
