@@ -6,6 +6,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +21,15 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     width: '25ch',
   },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    marginTop: 50,
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
 }));
 
 const NewPost = () => {
@@ -27,6 +39,11 @@ const NewPost = () => {
   const [bodyPost, setBodypost] = useState('');
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [errorInput, setErrorInput] = useState({
+    inputsAllErrors: false,
+    inputsTitleError: false,
+    inputsBodyError: false,
+  });
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -40,14 +57,18 @@ const NewPost = () => {
     e.preventDefault();
 
     if (!title && !bodyPost) {
-      console.log('Campos obligatorios');
-      return false;
-    } else if (!title) {
-      console.log('Campo Title obligatorio');
-      return false;
-    } else if (!setBodypost) {
-      console.log('Campo Post obligatorio');
-      return false;
+      setErrorInput({ ...errorInput, inputsAllErrors: true });
+      return;
+    }
+
+    if (!title) {
+      setErrorInput({ ...errorInput, inputsTitleError: true });
+      return;
+    }
+
+    if (!bodyPost) {
+      setErrorInput({ ...errorInput, inputsBodyError: true });
+      return;
     }
 
     const urlEndpoint = 'https://jsonplaceholder.typicode.com/posts';
@@ -61,12 +82,16 @@ const NewPost = () => {
     axios
       .post(urlEndpoint, data, headersConfig)
       .then((resp) => {
-        const data = resp.data;
+        // const data = resp.data;
         setTitle('');
         setBodypost('');
         setMessage('Send Post Ok!');
+        setErrorInput({
+          inputsAllErrors: false,
+          inputsTitleError: false,
+          inputsBodyError: false,
+        });
         setOpen(true);
-        console.log(data);
       })
       .catch((err) => {
         console.error(err);
@@ -77,39 +102,54 @@ const NewPost = () => {
 
   return (
     <>
-      <form className={classes.root} noValidate autoComplete='off' onSubmit={handlePost}>
-        <div>
-          <TextField
-            required
-            id='standard-required'
-            label='Title'
-            fullWidth
-            placeholder='Enter title...'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <TextField
-            id='standard-multiline-static'
-            label='Body Post'
-            multiline
-            rows={4}
-            fullWidth
-            placeholder='Enter text...'
-            value={bodyPost}
-            onChange={(e) => setBodypost(e.target.value)}
-            style={{ marginBottom: 20 }}
-          />
+      <div className={classes.root}>
+        <Grid container spacing={3} justify='center'>
+          <Grid item xs={8}>
+            <Paper className={classes.paper}>
+              <form noValidate autoComplete='off' onSubmit={handlePost}>
+                <div>
+                  <TextField
+                    required
+                    error={!title && (errorInput.inputsTitleError || errorInput.inputsAllErrors)}
+                    helperText={!title && (errorInput.inputsTitleError || errorInput.inputsAllErrors) ? '*Required' : ''}
+                    id='standard-required'
+                    label='Title'
+                    fullWidth
+                    placeholder='Enter title...'
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className={classes.margin}
+                  />
 
-          <Button type='submit' variant='contained' color='primary' fullWidth>
-            Send New Post
-          </Button>
-        </div>
-      </form>
+                  <TextField
+                    required
+                    error={!bodyPost && (errorInput.inputsBodyError || errorInput.inputsAllErrors)}
+                    helperText={!bodyPost && (errorInput.inputsBodyError || errorInput.inputsAllErrors) ? '*Required' : ''}
+                    id='standard-multiline-static'
+                    label='Body post'
+                    multiline
+                    rows={4}
+                    fullWidth
+                    placeholder='Enter text...'
+                    value={bodyPost}
+                    onChange={(e) => setBodypost(e.target.value)}
+                    className={classes.margin}
+                  />
+
+                  <Button type='submit' variant='contained' color='primary' fullWidth className={classes.margin}>
+                    Send New Post
+                  </Button>
+                </div>
+              </form>
+            </Paper>
+          </Grid>
+        </Grid>
+      </div>
 
       <Snackbar
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'right',
         }}
         open={open}
         autoHideDuration={6000}

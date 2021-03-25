@@ -16,7 +16,7 @@ import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: { width: '100%' },
-  container: { maxHeight: 440 },
+  container: { maxHeight: 600, marginTop: 50 },
 });
 
 const columns = [
@@ -60,14 +60,13 @@ const ListPosts = () => {
   };
 
   const handleDetailItem = (data) => {
-    console.log(data);
     history.push({ pathname: `/post-detail/${data.id}`, state: { detail: data } });
   };
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
+        <Table aria-label='sticky table'>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
